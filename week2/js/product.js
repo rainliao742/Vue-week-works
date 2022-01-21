@@ -23,7 +23,7 @@ const App = {
 		checkLogin(){
 			axios.post(`${this.apiUrl}/api/user/check`)
 			.then((res)=>{
-				//有登入的話，就顯示renderData的資料
+				//有登入的話，就顯示getProducts的資料
 				this.getProducts();
 			})
 			.catch((error)=>{

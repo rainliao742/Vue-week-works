@@ -14,8 +14,8 @@ const App = {
 		login(){
 			axios.post(`${url}/admin/signin`, this.user).then((response)=>{
 
-				const { token, expired } = response.data // 取出cookie token, 登入到期時間
-				document.cookie = `hexToken=${ token }; expires=${ new Date(expired)};`;
+				const { token, expired } = response.data // 取出cookie token, 登入到期時間 
+				document.cookie = `hexToken=${ token }; expires=${ new Date(expired)};`; //hexToken 必須跟 product頁面一樣設定為hexToken
 				location.href = 'products.html';
 				alert(response.data.message);
 
