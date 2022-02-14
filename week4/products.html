@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Vue 第四週作業::電商後台[LV2]</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+		crossorigin="anonymous">
+	<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+	<div id="app">
+		<div class="container">
+			<div class="text-end mt-4">
+				<button class="btn btn-primary" type="button" @click="openModal('isNew')"><!--帶值進去isNew 代表是新的一筆-->
+					<!--標記建立新的產品-->
+					建立新的產品
+				</button>
+			</div>
+			<table class="table mt-4">
+				<thead>
+					<tr class="py-3">
+						<th width="120">
+							分類
+						</th>
+						<th>產品名稱</th>
+						<th width="120">
+							原價
+						</th>
+						<th width="120">
+							售價
+						</th>
+						<th width="100">
+							是否啟用
+						</th>
+						<th width="120">
+							編輯
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="item in products" :key="item.id" >
+						<td>{{ item.category }}</td>
+						<td>{{ item.title }}</td>
+						<td class="text-end"></td>
+						<td class="text-end">
+							{{ item.price }}
+						</td>
+						<td>
+							<span class="text-success" v-if="item.is_enabled">啟用</span>
+							<span v-else>未啟用</span>
+						</td>
+						<td>
+							<div class="btn-group">
+								<button type="button"
+									class="btn btn-outline-primary btn-sm"
+									@click="openModal('edit', item)"><!--帶值進去edit 代表編輯，後面item是當前一筆的資料-->
+									編輯
+								</button>
+								<button type="button"
+									class="btn btn-outline-danger btn-sm"
+									@click="openModal('delete', item)"><!--帶值進去delete 代表編輯，後面item是當前一筆的資料-->
+									刪除
+								</button>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<!--內層:pages, 外層:pagination -->
+			<!--內層:get-product, 外層getProducts-->
+			<pagination :pages="pagination" @get-product="getProducts"></pagination><!--分頁功能-->
+		</div>
+		<!-- Modal -->
+		<div id="productModal" ref="productModal" class="modal fade" tabindex="-1"
+			aria-labelledby="productModalLabel" aria-hidden="true">
+		<product-modal :temporary-obj="temporaryObj"></product-modal>
+		</div>	
+
+		<div id="delProductModal" ref="delProductModal" class="modal fade" tabindex="-1"
+		aria-labelledby="delProductModalLabel" aria-hidden="true">
+		<del-product-modal :temporary-obj="temporaryObj" @get-products="getProducts"></del-product-modal>
+		</div>
+
+
+		<!-- Modal -->
+	</div>	
+	<script type="text/x-template" id="templateForProductModal"> <!--type需使用text/x-template--><!--編輯與新增介面-->
+		<div class="modal-dialog modal-xl">
+			<div class="modal-content border-0">
+				<div class="modal-header bg-dark text-white">
+					<h5 id="productModalLabel" class="modal-title">
+						<span v-if="isNew">新增產品</span>
+						<!--判斷新增顯示-->
+						<span v-else>編輯產品</span>
+						<!--判斷編輯-->
+					</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-4">
+							<div class="mb-3">
+								<label for="imageUrl"
+									class="form-label">主要圖片</label>
+								<input v-model="temporaryObj.imageUrl"
+									type="text" class="form-control mb-2"
+									placeholder="請輸入圖片連結">
+								<img class="img-fluid"
+									:src="temporaryObj.imageUrl"><!--把圖片綁上-->
+							</div>
+							<h3 class="mb-3">多圖新增</h3>
+							<div v-if="Array.isArray(temporaryObj.imagesUrl)"><!--確保是陣列行別-->
+								<div class="mb-1"
+									v-for="(image, key) in temporaryObj.imagesUrl"
+									:key="key + 45678"><!--key唯一值加上個別的數字串-->
+									<div class="mb-3">
+										<label for="imageUrl"
+											class="form-label">圖片網址</label>
+										<input v-model="temporaryObj.imagesUrl[key]"
+											type="text"
+											class="form-control"
+											placeholder="請輸入圖片連結">
+									</div>
+									<img class="img-fluid" :src="image">
+								</div>
+								<div
+									v-if="!temporaryObj.imagesUrl.length || temporaryObj.imagesUrl[temporaryObj.imagesUrl.length - 1]"><!--假設圖片陣列內都沒有東西或者是特定內容有沒有輸入文字-->
+									<button class="btn btn-outline-primary btn-sm d-block w-100"
+										@click="temporaryObj.imagesUrl.push('')"><!--增加一筆到陣列內-->
+										新增圖片
+									</button>
+								</div>
+								<div v-else>
+									<button class="btn btn-outline-danger btn-sm d-block w-100"
+										@click="temporaryObj.imagesUrl.pop()"><!--減少一筆到陣列內-->
+										刪除圖片
+									</button>
+								</div>
+							</div>
+							<div v-else>
+								<button class="btn btn-outline-primary btn-sm d-block w-100"
+									@click="createImages">
+									新增圖片
+								</button>
+							</div>
+						</div>
+						<div class="col-sm-8">
+							<div class="mb-3">
+								<label for="title" class="form-label">標題</label>
+								<input id="title" v-model="temporaryObj.title"
+									type="text" class="form-control"
+									placeholder="請輸入標題">
+							</div>
+
+							<div class="row">
+								<div class="mb-3 col-md-6">
+									<label for="category"
+										class="form-label">分類</label>
+									<input id="category"
+										v-model="temporaryObj.category"
+										type="text" class="form-control"
+										placeholder="請輸入分類">
+								</div>
+								<div class="mb-3 col-md-6">
+									<label for="price"
+										class="form-label">單位</label>
+									<input id="unit"
+										v-model="temporaryObj.unit"
+										type="text" class="form-control"
+										placeholder="請輸入單位">
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="mb-3 col-md-6">
+									<label for="origin_price"
+										class="form-label">原價</label>
+									<input id="origin_price"
+										v-model.number="temporaryObj.origin_price"
+										type="number" min="0"
+										class="form-control"
+										placeholder="請輸入原價">
+								</div>
+								<div class="mb-3 col-md-6">
+									<label for="price"
+										class="form-label">售價</label>
+									<input id="price"
+										v-model.number="temporaryObj.price"
+										type="number" min="0"
+										class="form-control"
+										placeholder="請輸入售價">
+								</div>
+							</div>
+							<hr>
+
+							<div class="mb-3">
+								<label for="description"
+									class="form-label">產品描述</label>
+								<textarea id="description"
+									v-model="temporaryObj.description"
+									type="text" class="form-control"
+									placeholder="請輸入產品描述">
+								</textarea>
+							</div>
+							<div class="mb-3">
+								<label for="content"
+									class="form-label">說明內容</label>
+								<textarea id="description"
+									v-model="temporaryObj.content"
+									type="text" class="form-control"
+									placeholder="請輸入說明內容">
+								</textarea>
+							</div>
+							<div class="mb-3">
+								<div class="form-check">
+									<input id="is_enabled"
+										v-model="temporaryObj.is_enabled"
+										class="form-check-input"
+										type="checkbox" :true-value="1"
+										:false-value="0">
+									<label class="form-check-label"
+										for="is_enabled">是否啟用</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-outline-secondary"
+							data-bs-dismiss="modal">
+							取消
+						</button>
+						<button type="button" class="btn btn-primary"
+							@click="updateProduct">
+							<!--更新產品資料-->
+							確認
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</script>
+	
+	<script type="text/x-template" id="templateDelProductModal"><!--type需使用text/x-template--><!--刪除介面-->
+			<div class="modal-dialog">
+				<div class="modal-content border-0">
+					<div class="modal-header bg-danger text-white">
+						<h5 id="delProductModalLabel" class="modal-title">
+							<span>刪除產品</span>
+						</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						是否刪除
+						<strong class="text-danger">{{ temporaryObj.title }}</strong>
+						商品(刪除後將無法恢復)。
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-outline-secondary"
+							data-bs-dismiss="modal">
+							取消
+						</button>
+						<button type="button" class="btn btn-danger"
+							@click="delProduct">
+							確認刪除
+						</button>
+					</div>
+				</div>
+			</div>
+	</script>
+
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.9.1/axios.min.js'
+			integrity='sha512-Xk3wWei2TGrsh9kDSBKUMIjw/86sLUvhtnv9f7fOuIwhhiUTKz8szkWkzHthrM5Bb3Bu9idSzkxOrkzhcneuiw=='
+			crossorigin='anonymous'></script>
+		<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"
+			integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG"
+			crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js"
+			integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc"
+			crossorigin="anonymous"></script>
+
+		<!-- <script src="https://unpkg.com/vue@next"></script> -->
+
+		<script src="js/product.js" type="module"></script>
+
+</body>
+
+</html>
