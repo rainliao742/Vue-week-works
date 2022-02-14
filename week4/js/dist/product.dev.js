@@ -66,7 +66,7 @@ var app = (0, _vueEsmBrowser.createApp)({
       var url = "".concat(apiUrl, "/api/").concat(apiPath, "/admin/products/?page=").concat(page); //用?+參數的方式,顯示每個分頁
 
       axios.get(url).then(function (res) {
-        _this2.products = res.data.products; //讀取遠端data裡的products,並且淺拷貝,放入空陣列products
+        _this2.products = res.data.products; //讀取遠端data裡的products,放入空陣列products
 
         _this2.pagination = res.data.pagination; //讀取遠端data裡的pagination
       })["catch"](function (error) {

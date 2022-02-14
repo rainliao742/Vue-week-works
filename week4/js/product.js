@@ -44,7 +44,7 @@ const app = createApp ({
 			const url = `${apiUrl}/api/${apiPath}/admin/products/?page=${page}`;//用?+參數的方式,顯示每個分頁
 			axios.get(url)
 			.then((res)=>{
-				this.products = res.data.products;//讀取遠端data裡的products,並且淺拷貝,放入空陣列products
+				this.products = res.data.products;//讀取遠端data裡的products,放入空陣列products
 				this.pagination = res.data.pagination;//讀取遠端data裡的pagination
 			})
 			.catch((error)=>{

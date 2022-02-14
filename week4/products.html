@@ -78,12 +78,12 @@
 		<!-- Modal -->
 		<div id="productModal" ref="productModal" class="modal fade" tabindex="-1"
 			aria-labelledby="productModalLabel" aria-hidden="true">
-		<product-modal :temporary-obj="temporaryObj"></product-modal>
+		<product-modal :temporary-obj="temporaryObj" :is-new="isNew" @get-products="getProducts"></product-modal><!--v-bind 把 isNew 傳到子層 => :is-new="isNew"-->
 		</div>	
 
 		<div id="delProductModal" ref="delProductModal" class="modal fade" tabindex="-1"
 		aria-labelledby="delProductModalLabel" aria-hidden="true">
-		<del-product-modal :temporary-obj="temporaryObj" @get-products="getProducts"></del-product-modal>
+		<del-product-modal :temporary-obj="temporaryObj" @get-products="getProducts"></del-product-modal><!--product.js裡的this.$emit('get-products'); 事件綁在HTML上 => @get-products="getProducts"-->
 		</div>
 
 
