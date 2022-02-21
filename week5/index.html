@@ -124,8 +124,8 @@
 									</div>
 								</td>
 								<td class="text-end">
-									<div v-if="final_total !== cartData.total" class="text-success">折扣價：</div>
-									{{ item.final_total }}
+									<!-- <div v-if="final_total !== cartData.total" class="text-success">折扣價：</div> -->
+									{{ item.total }}
 								</td>
 							</tr>
 						</template>
@@ -135,10 +135,10 @@
 							<td colspan="3" class="text-end">總計</td>
 							<td class="text-end">{{ cartData.total }}</td>
 						</tr>
-						<tr>
+						<!-- <tr>
 							<td colspan="3" class="text-end text-success" v-if="cartData.finial_total !== cartData.total">折扣價</td>
 							<td class="text-end text-success">{{ cartData.final_total }}</td>
-						</tr>
+						</tr> -->
 					</tfoot>
 				</table>
 			</div>
@@ -177,9 +177,10 @@
 					<label for="message" class="form-label">留言</label>
 					<textarea name="" id="message" class="form-control" cols="30" rows="10" v-model="form.message"></textarea>
 					</div>
-					{{ cartData.carts }}
+					<!-- {{ cartData.carts }} -->
 					<div class="text-end">
-					<button type="submit" class="btn btn-danger" :disabled="Object.keys(errors).length > 0">送出訂單</button>
+					<button type="submit" class="btn btn-danger" :disabled="Object.keys(errors).length > 0 ">送出訂單</button>
+					<!--- :disabled 套入判斷 cartData.carts.length === 0 這段會出錯 -->
 					</div>
 				</v-form>
 			</div>

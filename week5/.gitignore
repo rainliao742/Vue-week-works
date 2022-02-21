@@ -1,8 +1,8 @@
 .DS_Store
 node_modules
 /dist
-/new-project
-/gui-demo
+new-project
+gui-demo
 
 
 # local env files

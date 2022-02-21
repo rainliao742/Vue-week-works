@@ -1,9 +1,7 @@
 /* global bootstrap*/
 /* global axios*/
-//import { createApp } from "https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.9/vue.esm-browser.js";
 
-
-
+//vee 區域註冊元件的使用範例
 const { defineRule, Form, Field, ErrorMessage, configure } = VeeValidate;
 const { required, email, min, max } = VeeValidateRules;
 const { localize, loadLocaleFromURL } = VeeValidateI18n;
@@ -43,7 +41,7 @@ Vue.createApp({
           tel: "",
           address: "",
         },
-        message: "",
+        message: ""
       }
     };
   },
@@ -57,11 +55,11 @@ Vue.createApp({
       axios
         .get(`${api_url}/api/${api_path}/products/all`)
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           this.products = res.data.products;
         })
-        .catch((err) => {
-          alert(err.data.message);
+        .catch((error) => {
+          alert(error.data.message);
         });
     },
     openProductModal(id) {
@@ -72,11 +70,11 @@ Vue.createApp({
       axios
         .get(`${api_url}/api/${api_path}/cart`)
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           this.cartData = res.data.data;
         })
-        .catch((err) => {
-          alert(err.data.message);
+        .catch((error) => {
+          alert(error.data.message);
         });
     },
     addToCart(id, qty = 1) {
@@ -109,8 +107,8 @@ Vue.createApp({
           this.getCart();
           this.isLoadingItem = ""; //清空loading
         })
-        .catch((err) => {
-          alert(err.data.message);
+        .catch((error) => {
+          alert(error.data.message);
         });
     },
     updateCartItem(item) {
@@ -128,8 +126,8 @@ Vue.createApp({
           this.getCart();
           this.isLoadingItem = ""; //清空loading
         })
-        .catch((err) => {
-          alert(err.data.message);
+        .catch((error) => {
+          alert(error.data.message);
         });
     },
     deleteAllCarts() {
@@ -139,8 +137,8 @@ Vue.createApp({
           console.log(res);
           this.getCart();
         })
-        .catch((err) => {
-          alert(err.data.message);
+        .catch((error) => {
+          alert(error.data.message);
         });
     },
     createOrder() {
@@ -148,13 +146,12 @@ Vue.createApp({
       axios
         .post(`${api_url}/api/${api_path}/order`, { data: order })
         .then((res) => {
-          // console.log(res);
           alert(res.data.message);
           this.$refs.form.restForm();
           this.getCart();
         })
-        .catch((err) => {
-          alert(err.data.message);
+        .catch((error) => {
+          alert(error.data.message);
         });
     },
   },
@@ -175,7 +172,7 @@ Vue.createApp({
     },
     watch: {
       id() {
-        console.log(this.id);
+        // console.log(this.id);
         this.getProduct();
       },
     },
@@ -193,10 +190,13 @@ Vue.createApp({
           .then((res) => {
             console.log(res);
             this.product = res.data.product;
+          })
+          .catch((error) => {
+            alert(error.data.message);
           });
       },
       addToCart() {
-        console.log(this.qty);
+        // console.log(this.qty);
         this.$emit("add-cart", this.product.id, this.qty);
       },
     },
