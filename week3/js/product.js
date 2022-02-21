@@ -22,7 +22,6 @@ const App = {
 			})
 			.catch((error)=>{
 				//未登入或是嘗試直接進入此頁面會被導入login頁
-				console.log(error.data.message);
 				alert(error.data.message);
 				location.href="login.html";
 			})
@@ -34,7 +33,6 @@ const App = {
 			})
 			.catch((error)=>{
 				//錯誤訊息
-				console.log(error.data.message);
 				alert(error.data.message);
 			});
 		},
@@ -68,14 +66,12 @@ const App = {
 			}
 			axios[method](url, { data: this.temporaryObj})//用中括號的方式帶入method的變數
 			.then((res)=>{
-				console.log(res);
 				this.getProducts();
 				productModal.hide();
 
 			})
 			.catch((error)=>{
 				//錯誤訊息
-				console.log(error.data.message);
 				alert(error.data.message);
 			});			
 		},
@@ -83,13 +79,11 @@ const App = {
 			let url =`${this.apiUrl}/api/${this.apiPath}/admin/product/${this.temporaryObj.id}`;
 			axios.delete(url)
 			.then((res)=>{
-				console.log(res);
 				this.getProducts();
 				delProductModal.hide();
 			})
 			.catch((error)=>{
 				//錯誤訊息
-				console.log(error.data.message);
 				alert(error.data.message);
 			});
 		},
