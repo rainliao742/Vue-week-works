@@ -29,9 +29,11 @@ const api_path = "rainliao";
 Vue.createApp({
   data() {
     return {
-      cartData: {},
+      cartData: {
+        carts: [],//購物車內資料要預設為空值，表單驗證才不會出現錯誤。
+      },
       products: [],
-      product:{},
+      product: {},
       productId: "",
       isLoadingItem: "", //局部loading
       form: {
@@ -41,8 +43,8 @@ Vue.createApp({
           tel: "",
           address: "",
         },
-        message: ""
-      }
+        message: "",
+      },
     };
   },
   components: {
@@ -147,7 +149,7 @@ Vue.createApp({
         .post(`${api_url}/api/${api_path}/order`, { data: order })
         .then((res) => {
           alert(res.data.message);
-          this.$refs.form.restForm();
+          this.$refs.form.resetForm();
           this.getCart();
         })
         .catch((error) => {
