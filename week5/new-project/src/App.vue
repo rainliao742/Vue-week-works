@@ -27,13 +27,6 @@
     >NewPage</router-link>
   </li>
 </ul>
-  <!-- <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> |
-    <router-link :to="{
-      name: '新增頁面'
-    }">NewPage</router-link>
-  </div> -->
   <div class="container">
     <router-view/>
   </div>

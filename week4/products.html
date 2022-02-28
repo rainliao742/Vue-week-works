@@ -78,7 +78,7 @@
 		<!-- Modal -->
 		<div id="productModal" ref="productModal" class="modal fade" tabindex="-1"
 			aria-labelledby="productModalLabel" aria-hidden="true">
-		<product-modal :temporary-obj="temporaryObj" :is-new="isNew" @get-products="getProducts"></product-modal><!--v-bind 把 isNew 傳到子層 => :is-new="isNew"-->
+			<product-modal :temporary-obj="temporaryObj" :is-new="isNew" @get-products="getProducts"></product-modal><!--v-bind 把 isNew 傳到子層 => :is-new="isNew"-->
 		</div>	
 
 		<div id="delProductModal" ref="delProductModal" class="modal fade" tabindex="-1"
