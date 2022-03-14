@@ -21,7 +21,19 @@
 					建立新的產品
 				</button>
 			</div>
-		
+			<div class="mb-5 col-6 mx-auto d-flex flex-wrap">
+				<h5 class="mb-3 w-100 form-label">上傳圖片</h5>
+				<input type="file" style="display:none" id="file" placeholder="請輸入圖片" @change="onFileSelected" ref="fileInput">
+				<button class="btn btn-outline-primary btn-sm d-block w-100 mb-3" @click="$refs.fileInput.click()">
+					選取圖片
+				</button>								
+				<button class="btn btn-outline-primary btn-sm d-block w-100 mb-3" @click="onUpload" v-if="showUpLoadBtn">
+					上傳圖片
+				</button>
+				<img :src="temporaryObj.imgPreviewURL" alt="" ref="imgPreview" style="width:300px; object-fit:contain; margin:0 auto;">
+				<!-- <div class="mb-3" :style="{ background:`url(${temporaryObj.imgPreviewURL}) no-repeat center center`}" style=" background-size:cover; width:200px; height:200px; margin:0 auto"></div> -->
+				<textarea class="w-100 p-2 mt-3" name="" id="" cols="30" rows="" placeholder="上傳圖片網址" v-if="showUpLoadBtn">{{ uploadImgUrl }}</textarea>											
+			</div>			
 			<table class="table mt-4">
 				<thead>
 					<tr class="py-3">
@@ -116,19 +128,7 @@
 								<img class="img-fluid"
 									:src="temporaryObj.imageUrl"><!--把圖片綁上-->
 							</div>
-							<div class="mb-5 col-12 mx-auto d-flex flex-wrap">
-								<h5 class="mb-3 w-100 form-label">上傳圖片</h5>
-								<input type="file" style="display:none" id="file" placeholder="請輸入圖片" @change="onFileSelection" ref="fileInput">
-								<button class="btn btn-outline-primary btn-sm d-block w-100 mb-3" @click="$refs.fileInput.click()">
-									選取圖片
-								</button>								
-								<button class="btn btn-outline-primary btn-sm d-block w-100 mb-3" @click="onUploadImg">
-									上傳圖片
-								</button>
-								<img :src="temporaryObj.imgPreviewURL" alt="" ref="imgPreview" style="width:300px; object-fit:contain; margin:0 auto;">
-								<!-- <div class="mb-3" :style="{ background:`url(${temporaryObj.imgPreviewURL}) no-repeat center center`}" style=" background-size:cover; width:200px; height:200px; margin:0 auto"></div> -->
-								<textarea class="w-100 p-2 mt-3" name="" id="" cols="30" rows="" placeholder="上傳圖片網址">{{ uploadImgUrl }}</textarea>											
-							</div>							
+						
 							<h5 class="mb-3">多圖新增</h5>
 							<div v-if="Array.isArray(temporaryObj.imagesUrl)"  class="mb-3"><!--確保是陣列行別-->
 								<div class="mb-1"

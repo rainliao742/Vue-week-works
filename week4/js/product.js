@@ -15,10 +15,13 @@ const app = createApp({
       url: "https://vue3-course-api.hexschool.io/v2",
       products: [], // 擺放遠端的資料用
       isNew: false, //預設新增的資料 值為否
+      showUpLoadBtn: false,
       temporaryObj: {
         imagesUrl: [], //放入多圖上傳用
+        imgPreviewURL:''
       }, //當下選取的物件資料用
       pagination: {}, //分頁使用的空物件
+      uploadImgUrl: null
     };
   },
   methods: {
@@ -38,7 +41,7 @@ const app = createApp({
           this.getProducts();
         })
         .catch((error) => {
-        //   console.log(error.data.message);
+          //   console.log(error.data.message);
           alert(error.data.message);
           //未登入或是嘗試直接進入此頁面會被導入login頁
           location.href = "login.html";
@@ -55,11 +58,10 @@ const app = createApp({
         })
         .catch((error) => {
           //錯誤訊息
-        //   console.log(error.data.message);
+          //   console.log(error.data.message);
           alert(error.data.message);
         });
     },
-
     openModal(status, product) {
       //status對照isNew,edit,delete  product對照item
       if (status === "isNew") {
@@ -80,6 +82,41 @@ const app = createApp({
     createImages() {
       this.product.imagesUrl = [];
       this.product.imagesUrl.push("");
+      
+    },
+    onFileSelected(event) {
+     const [file] = event.target.files
+     this.temporaryObj.imgPreviewURL = window.URL.createObjectURL(file)
+     this.showUpLoadBtn = true;
+    },
+    // 上傳圖片
+    onUpload(){
+      const token = document.cookie.replace(
+        /(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/,
+        "$1"
+      );
+      // 當下次載入頁面時，自動放入token,要放入header才算成功
+      axios.defaults.headers.common["Authorization"] = token;
+      const file = this.$refs.fileInput.files[0];
+      const url = `${apiUrl}/api/${apiPath}/admin/upload`;
+      const formData = new FormData();
+      //formData.append("file-to-upload", this.selectedFile, this.selectedFile.name);
+      formData.append("file-to-upload", file);
+      axios
+        .post(url, formData, {
+          onUPloadProgress: uploadEvent => {
+            console.log('Upload Progress' + Math.round(uploadEvent.loaded / uploadEvent.total * 100) + '%');
+          }
+        })
+        .then((res) => {
+          console.log(res.data.imageUrl);
+          this.temporaryObj.imagesUrl.push(res.data.imageUrl);
+          this.uploadImgUrl = res.data.imageUrl;
+          this.getProducts();          
+        })
+        .catch((err) => {
+          console.log(err.response);
+        });
     }
   },
   mounted() {
@@ -101,34 +138,76 @@ const app = createApp({
   },
 });
 //元件新增與編輯功能
-app.component('productModal', {
-	props:['temporaryObj','isNew'],
-	template: '#templateForProductModal',
-	methods:{
-		updateProduct(){ //新增與編輯共用
-			let url = `${apiUrl}/api/${apiPath}/admin/product`;
-			let method = 'post';//新增資料使用post
-			if(!this.isNew){
-			//假設不是新的一筆,就顯示編輯用的URL跟method
-				url = `${apiUrl}/api/${apiPath}/admin/product/${this.temporaryObj.id}`;//編輯要帶入該品項的id
-				method = 'put'//編輯資料使用put				
-			}
-			axios[method](url, { data:this.temporaryObj})//用中括號的方式帶入method的變數
-			.then((res)=>{
-				// console.log(res);
-				//this.getProducts(); <= 外層使用的getProducts(更新頁面資料)方法,不能在內層使用
-				this.$emit('get-products');
-				productModal.hide();
-
-			})
-			.catch((error)=>{
-				//錯誤訊息
-				// console.log(error.data.message);
-				alert(error.data.message);
-			});			
-		},		
-	}
-})
+app.component("productModal", {
+  props: ["temporaryObj", "isNew", "showUpLoadBtn", "uploadImgUrl"],
+  template: "#templateForProductModal",
+  methods: {
+    data(){
+      showUpLoadBtn:false
+    },
+    updateProduct() {
+      //新增與編輯共用
+      let url = `${apiUrl}/api/${apiPath}/admin/product`;
+      let method = "post"; //新增資料使用post
+      if (!this.isNew) {
+        //假設不是新的一筆,就顯示編輯用的URL跟method
+        url = `${apiUrl}/api/${apiPath}/admin/product/${this.temporaryObj.id}`; //編輯要帶入該品項的id
+        method = "put"; //編輯資料使用put
+      }
+      axios[method](url, { data: this.temporaryObj }) //用中括號的方式帶入method的變數
+        .then((res) => {
+          // console.log(res);
+          //this.getProducts(); <= 外層使用的getProducts(更新頁面資料)方法,不能在內層使用
+          this.$emit("get-products");
+          productModal.hide();
+        })
+        .catch((error) => {
+          //錯誤訊息
+          // console.log(error.data.message);
+          alert(error.data.message);
+        });
+    },
+    onFileSelection(event) {
+      const [file] = event.target.files;
+      this.temporaryObj.imgPreviewURL = window.URL.createObjectURL(file);
+      this.showUpLoadBtn = true;
+    },
+    // 上傳圖片
+    onUploadImg() {
+      const token = document.cookie.replace(
+        /(?:(?:^|.*;\s*)hexToken\s*=\s*([^;]*).*$)|^.*$/,
+        "$1"
+      );
+      // 當下次載入頁面時，自動放入token,要放入header才算成功
+      axios.defaults.headers.common["Authorization"] = token;
+      const file = this.$refs.fileInput.files[0];
+      const url = `${apiUrl}/api/${apiPath}/admin/upload`;
+      const formData = new FormData();
+      //formData.append("file-to-upload", this.selectedFile, this.selectedFile.name);
+      formData.append("file-to-upload", file);
+      axios
+        .post(url, formData, {
+          onUPloadProgress: (uploadEvent) => {
+            console.log(
+              "Upload Progress" +
+                Math.round((uploadEvent.loaded / uploadEvent.total) * 100) +
+                "%"
+            );
+          },
+        })
+        .then((res) => {
+          console.log(res.data.imageUrl);
+          this.temporaryObj.imagesUrl.push(res.data.imageUrl);
+          this.temporaryObj.imgPreviewURL = '';
+          this.uploadImgUrl = res.data.imageUrl;
+          this.getProducts();
+        })
+        .catch((err) => {
+          console.log(err.response);
+        });
+    },
+  },
+});
 //元件刪除功能
 app.component('delProductModal', {
 	props: ['temporaryObj'],
