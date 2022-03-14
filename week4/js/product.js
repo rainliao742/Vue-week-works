@@ -80,8 +80,8 @@ const app = createApp({
       }
     },
     createImages() {
-      this.product.imagesUrl = [];
-      this.product.imagesUrl.push("");
+      this.temporaryObj.imagesUrl = [];
+      this.temporaryObj.imagesUrl.push("");
       
     },
     onFileSelected(event) {
