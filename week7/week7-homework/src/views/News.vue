@@ -1,3 +1,0 @@
-<template>
-  news = article
-</template>

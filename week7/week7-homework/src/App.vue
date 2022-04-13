@@ -1,20 +1,7 @@
 <template>
-  <Navbar></Navbar>
   <router-view />
-  <Footer></Footer>
 </template>
 
-<script>
-import Navbar from '@/components/FrontNavBar.vue'
-import Footer from '@/components/Footer.vue'
-
-export default {
-  components: {
-    Navbar,
-    Footer
-  }
-}
-</script>
 <style lang="scss">
 @import './assets/style/all.scss'; // scss資源
 #app {
@@ -24,10 +11,8 @@ export default {
   // text-align: center;
   // color: #2c3e50;
 }
-
 #nav {
   padding: 30px;
-
   a {
     font-weight: bold;
     color: #2c3e50;
@@ -37,4 +22,20 @@ export default {
     }
   }
 }
+//深色模式
+// @media( prefers-color-scheme: dark){
+//   body{
+//     background-color: var(--bs-gray-dark);
+//     color:var(--bs-white);
+//     .table{
+//       color:var(--bs-white);
+//     }
+//     .text-dark, .nav-link, a{
+//       color:var(--bs-white) !important;
+//     }
+//     .bg-white{
+//       background-color: var(--bs-gray-900) !important;
+//     }
+//   }
+// }
 </style>

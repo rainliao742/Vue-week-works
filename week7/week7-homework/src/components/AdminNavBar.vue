@@ -1,7 +1,7 @@
 <template>
-  <div class="bg-white sticky-top pt-2">
-    <div class="container">
-      <nav class="navbar px-0 navbar-expand-lg navbar-dark bg-dark">
+  <div class="bg-white sticky-top">
+    <div class="container-fluid px-0">
+      <nav class="navbar px-3 navbar-expand-lg navbar-dark bg-dark">
         <router-link class="navbar-brand position-relative" to="/"
           >繁果藝廊 FRUIT OF ART 後台</router-link
         >
@@ -17,7 +17,7 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div
-          class="collapse navbar-collapse bg-white custom-header-md-open"
+          class="collapse navbar-collapse custom-header-md-open"
           id="navbarNav"
           style="
             position: absolute;
@@ -28,18 +28,18 @@
         >
           <ul class="navbar-nav">
             <li class="nav-item">
-              <router-link class="nav-link" to="/">首頁</router-link>
+              <router-link class="nav-link" to="/">前台首頁</router-link>
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/">關於</router-link>
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" to="/products"
-                >產品列表</router-link
+              <router-link class="nav-link" to="products"
+                >後台產品列表</router-link
               >
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/cart">購物車 </router-link>
+              <router-link class="nav-link" to="coupon">後台折價券</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="orders">後台訂單管理</router-link>
             </li>
             <li class="nav-item">
               <a href="#" class="nav-link" @click.prevent="logout">登出</a>
